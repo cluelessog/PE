@@ -72,17 +72,7 @@ int main(){
 	{   perror("mutex init");
 	    exit(1);
 	}
-//	#if defined(_POSIX_THREAD_PRIO_INHERIT) && _POSIX_THREAD_PRIO_INHERIT != -1 && defined(USE_PRI_INHERIT)
-/*        printf("Using priority inheritance\n");
-        if (pthread_mutexattr_setprotocol(&mutex_attr, PTHREAD_PRIO_INHERIT))
-	    {   perror("mutex init");
-	        exit(1);
-	    }
-    #else
-        printf("Not Using priority inheritance\n");
-
-    #endif
-*/
+	
 if (pthread_mutex_init(&shared_mutex, &mutex_attr))
 	{   perror("mutex init");
 	    exit(1);
