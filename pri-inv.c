@@ -1,22 +1,22 @@
-#define _GNU_SOURCE
 #include <sched.h>
 #include <stdio.h>
 #include <pthread.h>
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#define LOW 8
+#define MID 3
+
 pthread_mutex_t shared_mutex;
 pthread_mutexattr_t mutex_attr;
-
-#define LOW 2
-#define MID 5
 
 int gettime ()
 {
   return time(NULL);
 }
 
-    
+//looping for n seconds    
 void doSomething (int n)
 {
    int now = gettime();
@@ -30,39 +30,39 @@ void doSomething (int n)
 void *low()
 {   int now = gettime();
     struct sched_param the_priority;
-
     the_priority.sched_priority  = 1;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &the_priority);
     pthread_mutex_lock(&shared_mutex);
+    printf("L is taking resources\n");
     doSomething(LOW);
     pthread_mutex_unlock(&shared_mutex);
-    printf ("low took %d seconds wanted about %d (critical section + mid time)\n",gettime() - now,LOW+MID);
-return NULL;
+    return NULL;
     
 }
 void *high()
-{   int now ;
+{   
+    sleep(2);   //executes after two seconds
     struct sched_param the_priority;
-
     the_priority.sched_priority  = 50;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &the_priority);
+    printf("H came\n");
     now=gettime();
+    printf("H is waiting for resources\n");
     pthread_mutex_lock(&shared_mutex);
+    printf("H gets resource now\n");
     pthread_mutex_unlock(&shared_mutex);
-    printf ("high took %d seconds wanted about %d (low critical section)\n",gettime() - now,LOW);
-return NULL;
-        
+    return NULL;       
 }
 void *mid()
-{   struct sched_param the_priority;
-    int now;
-
+{   
+    sleep(3);  //executes after 3 seconds 
+    struct sched_param the_priority;
     the_priority.sched_priority  = 25;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &the_priority);
     now = gettime();
+    printf("M came preempting L\n");
     doSomething(MID);
-    printf ("mid took %d seconds wanted about %d\n",gettime() - now,MID);
-return NULL;
+    return NULL;
     
   }
 
