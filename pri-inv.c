@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 pthread_mutex_t shared_mutex;
-const int seconds = 1;
 pthread_mutexattr_t mutex_attr;
 
 #define LOW 2
@@ -35,7 +34,7 @@ void *low()
     the_priority.sched_priority  = 1;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &the_priority);
     pthread_mutex_lock(&shared_mutex);
-    doSomething(LOW*seconds);
+    doSomething(LOW);
     pthread_mutex_unlock(&shared_mutex);
     printf ("low took %d seconds wanted about %d (critical section + mid time)\n",gettime() - now,LOW+MID);
 return NULL;
@@ -61,7 +60,7 @@ void *mid()
     the_priority.sched_priority  = 25;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &the_priority);
     now = gettime();
-    doSomething(MID*seconds);
+    doSomething(MID);
     printf ("mid took %d seconds wanted about %d\n",gettime() - now,MID);
 return NULL;
     
