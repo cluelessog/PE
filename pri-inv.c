@@ -28,7 +28,7 @@ void doSomething (int n)
 }
 
 void *low()
-{   int now = gettime();
+{   
     struct sched_param the_priority;
     the_priority.sched_priority  = 1;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &the_priority);
@@ -36,6 +36,7 @@ void *low()
     printf("L is taking resources\n");
     doSomething(LOW);
     pthread_mutex_unlock(&shared_mutex);
+    printf("L is releasing resources\n");
     return NULL;
     
 }
@@ -46,11 +47,11 @@ void *high()
     the_priority.sched_priority  = 50;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &the_priority);
     printf("H came\n");
-    now=gettime();
     printf("H is waiting for resources\n");
     pthread_mutex_lock(&shared_mutex);
     printf("H gets resource now\n");
     pthread_mutex_unlock(&shared_mutex);
+    printf("H finishes\n");
     return NULL;       
 }
 void *mid()
@@ -59,9 +60,9 @@ void *mid()
     struct sched_param the_priority;
     the_priority.sched_priority  = 25;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &the_priority);
-    now = gettime();
     printf("M came preempting L\n");
     doSomething(MID);
+    printf("Releasing L\n");
     return NULL;
     
   }
