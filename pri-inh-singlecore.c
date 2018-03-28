@@ -50,7 +50,6 @@ void *low()
 {    
     struct sched_param the_priority;
     struct sched_param get_prio;
-    struct sched_param boosted_priority;
     the_priority.sched_priority  = sched_get_priority_min(SCHED_FIFO);
     if(pthread_setschedparam(pthread_self(), policy, &the_priority) < 0){
         perror(" ");
