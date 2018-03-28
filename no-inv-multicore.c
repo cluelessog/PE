@@ -4,9 +4,7 @@
 #include <pthread.h>
 #include <time.h>
 #include <errno.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
 
 #define LOW 10
 #define MID 5
@@ -116,15 +114,15 @@ int main(int argc,char *argv[]){
     
     //initialising mutex attribute
     if (pthread_mutexattr_init(&mutex_prioinherit)) 
-	{   perror("mutex init");
-	    exit(1);
+	{   
+	    perror("mutex init");
 	}
     
     
     //applying attribute to mutex
     if (pthread_mutex_init(&shared_mutex, &mutex_prioinherit))
-	{   perror("mutex init");
-	    exit(1);
+	{   
+	    perror("mutex init");
 	}
     
     pthread_t t1,t2,t3;
